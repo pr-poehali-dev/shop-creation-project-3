@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import Icon from '@/components/ui/icon';
 
 interface CartItem {
@@ -19,14 +18,23 @@ interface CartProps {
 }
 
 const Cart = ({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }: CartProps) => {
+  if (!isOpen) return null;
+
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col">
-        <SheetHeader>
-          <SheetTitle className="text-2xl">Корзина</SheetTitle>
-        </SheetHeader>
+    <div className="fixed inset-0 z-50">
+      <div 
+        className="absolute inset-0 bg-black/50 animate-fade-in" 
+        onClick={onClose}
+      />
+      <div className="absolute right-0 top-0 h-full w-full sm:w-[400px] bg-white shadow-xl flex flex-col animate-slide-in-right">
+        <div className="flex items-center justify-between p-6 border-b">
+          <h2 className="text-2xl font-bold">Корзина</h2>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <Icon name="X" size={24} />
+          </Button>
+        </div>
 
         {items.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
@@ -38,7 +46,7 @@ const Cart = ({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }: CartPr
           </div>
         ) : (
           <>
-            <div className="flex-1 overflow-y-auto py-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-4">
                   <div className="w-24 h-24 bg-secondary rounded overflow-hidden flex-shrink-0">
@@ -86,7 +94,7 @@ const Cart = ({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }: CartPr
               ))}
             </div>
 
-            <div className="border-t pt-6 space-y-4">
+            <div className="border-t p-6 space-y-4">
               <div className="flex justify-between text-lg font-semibold">
                 <span>Итого:</span>
                 <span>{total.toLocaleString('ru-RU')} ₽</span>
@@ -97,8 +105,8 @@ const Cart = ({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }: CartPr
             </div>
           </>
         )}
-      </SheetContent>
-    </Sheet>
+      </div>
+    </div>
   );
 };
 
