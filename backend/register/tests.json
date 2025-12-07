@@ -1,0 +1,47 @@
+{
+  "tests": [
+    {
+      "name": "Успешная регистрация",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "email": "test@example.com",
+        "password": "password123"
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "message": "string",
+        "user_id": "number"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Регистрация с коротким паролем",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "email": "test2@example.com",
+        "password": "short"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Регистрация с некорректным email",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "email": "invalid-email",
+        "password": "password123"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

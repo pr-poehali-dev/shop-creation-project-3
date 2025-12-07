@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
@@ -9,6 +10,7 @@ interface HeaderProps {
 
 const Header = ({ cartItemsCount, onCartOpen }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const navigation = [
     { name: 'Каталог', href: '#catalog' },
@@ -45,7 +47,12 @@ const Header = ({ cartItemsCount, onCartOpen }: HeaderProps) => {
                 <Icon name="Search" size={20} />
               </Button>
               
-              <Button variant="ghost" size="icon" className="hidden md:flex">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="hidden md:flex"
+                onClick={() => navigate('/register')}
+              >
                 <Icon name="User" size={20} />
               </Button>
 
@@ -94,9 +101,16 @@ const Header = ({ cartItemsCount, onCartOpen }: HeaderProps) => {
                   <Icon name="Search" size={20} />
                   Поиск
                 </Button>
-                <Button variant="outline" className="w-full justify-start gap-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start gap-2"
+                  onClick={() => {
+                    navigate('/register');
+                    setIsMenuOpen(false);
+                  }}
+                >
                   <Icon name="User" size={20} />
-                  Личный кабинет
+                  Регистрация
                 </Button>
               </div>
             </div>
