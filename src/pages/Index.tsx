@@ -3,7 +3,9 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import ProductCard from '@/components/ProductCard';
 import Cart from '@/components/Cart';
+import CheckoutModal, { PaymentData } from '@/components/CheckoutModal';
 import Footer from '@/components/Footer';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -23,8 +25,11 @@ interface CartItem extends Product {
 
 const Index = () => {
   const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [deliveryMethod, setDeliveryMethod] = useState('courier');
+  const { toast } = useToast();
 
   const products: Product[] = [
     { id: 1, name: 'Беспроводные наушники', price: 8990, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop', category: 'Аудио' },
@@ -65,6 +70,69 @@ const Index = () => {
 
   const handleRemoveItem = (id: number) => {
     setCartItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const handleCheckout = (delivery: string) => {
+    setDeliveryMethod(delivery);
+    setCartOpen(false);
+    setCheckoutOpen(true);
+  };
+
+  const calculateTotal = () => {
+    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const deliveryPrices: Record<string, number> = {
+      courier: 500,
+      pickup: 0,
+      express: 1000
+    };
+    return subtotal + (deliveryPrices[deliveryMethod] || 0);
+  };
+
+  const handlePayment = async (paymentData: PaymentData) => {
+    try {
+      const orderData = {
+        items: cartItems,
+        delivery_method: deliveryMethod,
+        payment_method: paymentData.paymentMethod,
+        customer_name: paymentData.name,
+        customer_email: paymentData.email,
+        customer_phone: paymentData.phone,
+        delivery_address: paymentData.address,
+        total: calculateTotal()
+      };
+
+      const response = await fetch('https://functions.poehali.dev/31fc2791-c211-4f2b-b639-edfac5243d9b', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Ошибка создания заказа');
+      }
+
+      toast({
+        title: 'Заказ оформлен!',
+        description: `Номер заказа: ${data.order_id}`,
+      });
+
+      setCheckoutOpen(false);
+      setCartItems([]);
+      
+      if (data.payment_url) {
+        window.location.href = data.payment_url;
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: error instanceof Error ? error.message : 'Не удалось оформить заказ',
+        variant: 'destructive'
+      });
+    }
   };
 
   const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -224,6 +292,15 @@ const Index = () => {
         items={cartItems}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
+        onCheckout={handleCheckout}
+      />
+
+      <CheckoutModal
+        isOpen={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        total={calculateTotal()}
+        deliveryMethod={deliveryMethod}
+        onPayment={handlePayment}
       />
     </div>
   );

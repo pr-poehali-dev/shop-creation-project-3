@@ -1,0 +1,42 @@
+{
+  "tests": [
+    {
+      "name": "Успешное создание заказа",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "items": [
+          {"id": 1, "name": "Тестовый товар", "price": 1000, "quantity": 2}
+        ],
+        "delivery_method": "courier",
+        "payment_method": "card",
+        "customer_name": "Иван Иванов",
+        "customer_email": "test@example.com",
+        "customer_phone": "+7 999 123 45 67",
+        "delivery_address": "Москва, ул. Тестовая, д. 1",
+        "total": 2500
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "message": "string",
+        "order_id": "number",
+        "order_number": "string",
+        "payment_url": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Создание заказа без обязательных полей",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "items": []
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

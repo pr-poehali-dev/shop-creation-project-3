@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 
 interface CartItem {
@@ -15,12 +18,24 @@ interface CartProps {
   items: CartItem[];
   onUpdateQuantity: (id: number, quantity: number) => void;
   onRemoveItem: (id: number) => void;
+  onCheckout: (deliveryMethod: string) => void;
 }
 
-const Cart = ({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }: CartProps) => {
+const Cart = ({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem, onCheckout }: CartProps) => {
+  const [deliveryMethod, setDeliveryMethod] = useState('courier');
+  
   if (!isOpen) return null;
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  
+  const deliveryPrices: Record<string, number> = {
+    courier: 500,
+    pickup: 0,
+    express: 1000
+  };
+  
+  const deliveryPrice = deliveryPrices[deliveryMethod] || 0;
+  const total = subtotal + deliveryPrice;
 
   return (
     <div className="fixed inset-0 z-50">
@@ -95,12 +110,69 @@ const Cart = ({ isOpen, onClose, items, onUpdateQuantity, onRemoveItem }: CartPr
             </div>
 
             <div className="border-t p-6 space-y-4">
-              <div className="flex justify-between text-lg font-semibold">
-                <span>Итого:</span>
-                <span>{total.toLocaleString('ru-RU')} ₽</span>
+              <div className="space-y-3">
+                <h3 className="font-semibold">Способ доставки</h3>
+                <RadioGroup value={deliveryMethod} onValueChange={setDeliveryMethod}>
+                  <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-secondary/50" onClick={() => setDeliveryMethod('courier')}>
+                    <RadioGroupItem value="courier" id="courier" />
+                    <Label htmlFor="courier" className="flex-1 cursor-pointer">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">Курьерская доставка</p>
+                          <p className="text-xs text-muted-foreground">1-2 дня</p>
+                        </div>
+                        <span className="font-semibold">500 ₽</span>
+                      </div>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-secondary/50" onClick={() => setDeliveryMethod('pickup')}>
+                    <RadioGroupItem value="pickup" id="pickup" />
+                    <Label htmlFor="pickup" className="flex-1 cursor-pointer">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">Самовывоз</p>
+                          <p className="text-xs text-muted-foreground">Сегодня</p>
+                        </div>
+                        <span className="font-semibold text-green-600">Бесплатно</span>
+                      </div>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 border rounded-lg p-3 cursor-pointer hover:bg-secondary/50" onClick={() => setDeliveryMethod('express')}>
+                    <RadioGroupItem value="express" id="express" />
+                    <Label htmlFor="express" className="flex-1 cursor-pointer">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">Экспресс-доставка</p>
+                          <p className="text-xs text-muted-foreground">3-4 часа</p>
+                        </div>
+                        <span className="font-semibold">1000 ₽</span>
+                      </div>
+                    </Label>
+                  </div>
+                </RadioGroup>
               </div>
-              <Button className="w-full" size="lg">
-                Оформить заказ
+              
+              <div className="space-y-2 pt-2">
+                <div className="flex justify-between text-sm">
+                  <span>Товары:</span>
+                  <span>{subtotal.toLocaleString('ru-RU')} ₽</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Доставка:</span>
+                  <span>{deliveryPrice === 0 ? 'Бесплатно' : `${deliveryPrice.toLocaleString('ru-RU')} ₽`}</span>
+                </div>
+                <div className="flex justify-between text-lg font-semibold pt-2 border-t">
+                  <span>Итого:</span>
+                  <span>{total.toLocaleString('ru-RU')} ₽</span>
+                </div>
+              </div>
+              
+              <Button 
+                className="w-full bg-green-500 hover:bg-green-600 text-white" 
+                size="lg"
+                onClick={() => onCheckout(deliveryMethod)}
+              >
+                Перейти к оплате
               </Button>
             </div>
           </>
