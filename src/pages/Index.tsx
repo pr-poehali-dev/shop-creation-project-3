@@ -90,6 +90,8 @@ const Index = () => {
 
   const handlePayment = async (paymentData: PaymentData) => {
     try {
+      const userId = localStorage.getItem('user_id');
+      
       const orderData = {
         items: cartItems,
         delivery_method: deliveryMethod,
@@ -98,7 +100,8 @@ const Index = () => {
         customer_email: paymentData.email,
         customer_phone: paymentData.phone,
         delivery_address: paymentData.address,
-        total: calculateTotal()
+        total: calculateTotal(),
+        user_id: userId ? parseInt(userId) : null
       };
 
       const response = await fetch('https://functions.poehali.dev/31fc2791-c211-4f2b-b639-edfac5243d9b', {

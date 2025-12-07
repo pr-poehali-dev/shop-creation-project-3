@@ -48,6 +48,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         customer_phone = body_data.get('customer_phone', '')
         delivery_address = body_data.get('delivery_address', '')
         total = body_data.get('total', 0)
+        user_id = body_data.get('user_id')
         
         if not all([items, delivery_method, payment_method, customer_name, customer_email, customer_phone]):
             return {
@@ -70,14 +71,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             INSERT INTO orders (
                 order_number, customer_name, customer_email, customer_phone,
                 delivery_address, delivery_method, payment_method, 
-                payment_status, total_amount, items
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                payment_status, total_amount, items, user_id
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id
             """,
             (
                 order_number, customer_name, customer_email, customer_phone,
                 delivery_address, delivery_method, payment_method,
-                'pending', total, json.dumps(items)
+                'pending', total, json.dumps(items), user_id
             )
         )
         

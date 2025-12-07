@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
@@ -10,7 +10,13 @@ interface HeaderProps {
 
 const Header = ({ cartItemsCount, onCartOpen }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    const userId = localStorage.getItem('user_id');
+    setIsLoggedIn(!!userId);
+  }, []);
 
   const navigation = [
     { name: 'Каталог', href: '#catalog' },
@@ -51,7 +57,7 @@ const Header = ({ cartItemsCount, onCartOpen }: HeaderProps) => {
                 variant="ghost" 
                 size="icon" 
                 className="hidden md:flex"
-                onClick={() => navigate('/register')}
+                onClick={() => navigate(isLoggedIn ? '/account' : '/login')}
               >
                 <Icon name="User" size={20} />
               </Button>
@@ -105,12 +111,12 @@ const Header = ({ cartItemsCount, onCartOpen }: HeaderProps) => {
                   variant="outline" 
                   className="w-full justify-start gap-2"
                   onClick={() => {
-                    navigate('/register');
+                    navigate(isLoggedIn ? '/account' : '/login');
                     setIsMenuOpen(false);
                   }}
                 >
                   <Icon name="User" size={20} />
-                  Регистрация
+                  {isLoggedIn ? 'Личный кабинет' : 'Войти'}
                 </Button>
               </div>
             </div>
