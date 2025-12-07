@@ -27,12 +27,12 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const products: Product[] = [
-    { id: 1, name: 'Беспроводные наушники', price: 8990, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop', category: 'Аудио' },
-    { id: 2, name: 'Умные часы', price: 15990, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=500&fit=crop', category: 'Аксессуары' },
-    { id: 3, name: 'Минималистичный рюкзак', price: 4990, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=500&fit=crop', category: 'Сумки' },
-    { id: 4, name: 'Портативная колонка', price: 6490, image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&h=500&fit=crop', category: 'Аудио' },
-    { id: 5, name: 'Беспроводная мышь', price: 2990, image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&h=500&fit=crop', category: 'Техника' },
-    { id: 6, name: 'Клавиатура механическая', price: 9990, image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&h=500&fit=crop', category: 'Техника' },
+    { id: 1, name: 'Беспроводные наушники', price: 8990, image: 'https://api.dicebear.com/7.x/shapes/svg?seed=headphones&backgroundColor=ffdfba,c1e1c1,bae1ff&scale=80', category: 'Аудио' },
+    { id: 2, name: 'Умные часы', price: 15990, image: 'https://api.dicebear.com/7.x/shapes/svg?seed=watch&backgroundColor=ffdfba,c1e1c1,bae1ff&scale=80', category: 'Аксессуары' },
+    { id: 3, name: 'Минималистичный рюкзак', price: 4990, image: 'https://api.dicebear.com/7.x/shapes/svg?seed=backpack&backgroundColor=ffdfba,c1e1c1,bae1ff&scale=80', category: 'Сумки' },
+    { id: 4, name: 'Портативная колонка', price: 6490, image: 'https://api.dicebear.com/7.x/shapes/svg?seed=speaker&backgroundColor=ffdfba,c1e1c1,bae1ff&scale=80', category: 'Аудио' },
+    { id: 5, name: 'Беспроводная мышь', price: 2990, image: 'https://api.dicebear.com/7.x/shapes/svg?seed=mouse&backgroundColor=ffdfba,c1e1c1,bae1ff&scale=80', category: 'Техника' },
+    { id: 6, name: 'Клавиатура механическая', price: 9990, image: 'https://api.dicebear.com/7.x/shapes/svg?seed=keyboard&backgroundColor=ffdfba,c1e1c1,bae1ff&scale=80', category: 'Техника' },
   ];
 
   const categories = ['all', 'Аудио', 'Аксессуары', 'Сумки', 'Техника'];
