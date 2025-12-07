@@ -13,13 +13,13 @@ interface ProductCardProps {
 
 const ProductCard = ({ id, name, price, image, category, onAddToCart }: ProductCardProps) => {
   return (
-    <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow">
+    <Card className="group overflow-hidden border-2 border-green-300 shadow-sm hover:shadow-lg hover:border-green-400 transition-all duration-300">
       <CardContent className="p-0">
         <div className="aspect-square bg-secondary relative overflow-hidden">
           <img
             src={image}
             alt={name}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-2"
           />
         </div>
         <div className="p-6">
@@ -31,8 +31,7 @@ const ProductCard = ({ id, name, price, image, category, onAddToCart }: ProductC
             <span className="text-xl font-bold">{price.toLocaleString('ru-RU')} ₽</span>
             <Button
               size="icon"
-              variant="outline"
-              className="rounded-full"
+              className="rounded-full bg-green-500 hover:bg-green-600 text-white"
               onClick={() => onAddToCart(id)}
             >
               <Icon name="Plus" size={20} />
