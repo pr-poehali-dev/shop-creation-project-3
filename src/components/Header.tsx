@@ -1,0 +1,99 @@
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import Icon from '@/components/ui/icon';
+
+interface HeaderProps {
+  cartItemsCount: number;
+  onCartOpen: () => void;
+}
+
+const Header = ({ cartItemsCount, onCartOpen }: HeaderProps) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const navigation = [
+    { name: 'Каталог', href: '#catalog' },
+    { name: 'О магазине', href: '#about' },
+    { name: 'Доставка', href: '#delivery' },
+    { name: 'Блог', href: '#blog' },
+    { name: 'FAQ', href: '#faq' },
+    { name: 'Контакты', href: '#contacts' },
+  ];
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          <a href="#" className="text-2xl font-bold tracking-tight">
+            STORE
+          </a>
+
+          <nav className="hidden md:flex items-center gap-8">
+            {navigation.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+              >
+                {item.name}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" className="hidden md:flex">
+              <Icon name="Search" size={20} />
+            </Button>
+            
+            <Button variant="ghost" size="icon" className="hidden md:flex">
+              <Icon name="User" size={20} />
+            </Button>
+
+            <Button variant="ghost" size="icon" className="relative" onClick={onCartOpen}>
+              <Icon name="ShoppingCart" size={20} />
+              {cartItemsCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-black text-white text-xs flex items-center justify-center">
+                  {cartItemsCount}
+                </span>
+              )}
+            </Button>
+
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon">
+                  <Icon name="Menu" size={24} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px]">
+                <nav className="flex flex-col gap-6 mt-8">
+                  {navigation.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      className="text-lg font-medium hover:text-accent transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                  <div className="border-t pt-6 space-y-4">
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Icon name="Search" size={20} />
+                      Поиск
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Icon name="User" size={20} />
+                      Личный кабинет
+                    </Button>
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
